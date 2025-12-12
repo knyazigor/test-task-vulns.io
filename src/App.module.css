@@ -1,0 +1,45 @@
+
+.main {
+  width: 100vw;
+  height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: start;
+  width: 1200px;
+  height: 100%;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 1rem;
+}
+
+.resultContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+}
+
+.result {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
