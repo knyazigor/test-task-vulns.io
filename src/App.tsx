@@ -1,104 +1,97 @@
-import styles from "./App.module.css";
-import {
-  TextArea,
-  TextBox,
-  type TextAreaHandle,
-  type TextBoxHandle,
-} from "@progress/kendo-react-inputs";
-import { Label } from "@progress/kendo-react-labels";
-import {
-  DropDownList,
-  type DropDownListHandle,
-} from "@progress/kendo-react-dropdowns";
-import { Button } from "@progress/kendo-react-buttons";
-import { API_KEY, AUDIT_URL, OS_LIST } from "./lib/constants";
-import React, { useRef, useState } from "react";
-import { useFetch } from "./hooks/useFetch";
-import { Loader } from "@progress/kendo-react-indicators";
-import type { AuditResult } from "./lib/types";
-import Result from "./Result";
-import { mapRequestBody } from "./lib/utils";
-import FormField from "./FormField";
-import {
-  nameValidator,
-  versionValidator,
-  packagesValidator,
-} from "./lib/validators";
+import styles from './App.module.css';
+import { TextArea, TextBox } from '@progress/kendo-react-inputs';
+import { Label } from '@progress/kendo-react-labels';
+import { Button } from '@progress/kendo-react-buttons';
+import { Loader } from '@progress/kendo-react-indicators';
+import React from 'react';
+import { OS_LIST } from './lib/constants';
+import { useFormValidation } from './hooks/useFormValidation';
+import { useAuditSubmission } from './hooks/useAuditSubmission';
+import { DropDownList } from '@progress/kendo-react-dropdowns';
+import { FormField, Result } from './components';
 
 function App() {
-  const { data, loading, fetchData, error } = useFetch<AuditResult>();
-  const [formErrors, setFormErrors] = useState({
-    osName: "",
-    osVersion: "",
-    packages: "",
-  });
+  const { values, errors, updateField, validate } = useFormValidation();
 
-  const osNameRef = useRef<DropDownListHandle>(null);
-  const osVersionRef = useRef<TextBoxHandle>(null);
-  const packagesRef = useRef<TextAreaHandle>(null);
+  const { data, loading, error, submitAudit } = useAuditSubmission();
 
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const isValid = validate();
+    if (!isValid) return;
 
-    const osName = String(osNameRef.current?.value || "");
-    const osVersion = String(osVersionRef.current?.value || "");
-    const packages = String(packagesRef.current?.value || "");
-
-    const errors = {
-      osName: nameValidator(osName),
-      osVersion: versionValidator(osVersion),
-      packages: packagesValidator(packages),
-    };
-
-    setFormErrors(errors);
-
-    const hasErrors = Object.values(errors).some((error) => error !== "");
-    if (hasErrors) {
-      return;
-    }
-
-    const body = mapRequestBody(osName, osVersion, packages);
-
-    await fetchData(AUDIT_URL, {
-      method: "POST",
-      body,
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": API_KEY,
-      },
-    });
+    await submitAudit(values.osName, values.osVersion, values.packages);
   };
 
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form
+          onSubmit={handleSubmit}
+          className={styles.form}
+        >
           <fieldset className={styles.optionsContainer}>
             <FormField
-              label="OS Name:"
-              inputElement={<DropDownList data={OS_LIST} ref={osNameRef} />}
-              error={formErrors.osName}
-            />
-            <FormField
-              label="OS version:"
-              inputElement={<TextBox ref={osVersionRef} />}
-              error={formErrors.osVersion}
-            />
-            <FormField
-              label="Packages:"
+              label='OS Name:'
               inputElement={
-                <TextArea ref={packagesRef} style={{ flexGrow: 1 }} />
+                <DropDownList
+                  data={OS_LIST}
+                  value={values.osName}
+                  onChange={(e) => updateField('osName', e.target.value)}
+                />
               }
-              error={formErrors.packages}
+              error={errors.osName}
+            />
+            <FormField
+              label='OS version:'
+              inputElement={
+                <TextBox
+                  value={values.osVersion}
+                  onChange={(e) =>
+                    updateField('osVersion', String(e.target.value ?? ''))
+                  }
+                />
+              }
+              error={errors.osVersion}
+            />
+            <FormField
+              label='Packages:'
+              inputElement={
+                <TextArea
+                  value={values.packages}
+                  onChange={(e) =>
+                    updateField('packages', e.target.value ?? '')
+                  }
+                  style={{ flexGrow: 1 }}
+                  rows={6}
+                />
+              }
+              error={errors.packages}
             />
 
-            <Button type="submit" disabled={loading} themeColor="primary">
-              {loading ? <Loader size="small" type="pulsing" /> : "Audit"}
+            <Button
+              type='submit'
+              disabled={loading}
+              themeColor='primary'
+            >
+              {loading ? (
+                <Loader
+                  size='small'
+                  type='pulsing'
+                />
+              ) : (
+                'Audit'
+              )}
             </Button>
           </fieldset>
+
           <fieldset className={styles.resultContainer}>
             <Label>Audit Result</Label>
-            <Result {...{ loading, error, data }} />
+            <Result
+              loading={loading}
+              error={error}
+              data={data}
+            />
           </fieldset>
         </form>
       </div>

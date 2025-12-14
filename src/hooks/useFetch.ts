@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from 'react';
 
 export interface UseFetchOptions extends RequestInit {
   headers?: Record<string, string>;
@@ -10,7 +10,7 @@ export interface UseFetchResult<TData = unknown> {
   error: string | null;
   fetchData: <TResponse extends TData = TData>(
     url: string,
-    options?: UseFetchOptions
+    options?: UseFetchOptions,
   ) => Promise<TResponse | undefined>;
   abort: () => void;
 }
@@ -25,7 +25,7 @@ export function useFetch<TData = unknown>(): UseFetchResult<TData> {
   const fetchData = useCallback(
     async <TResponse extends TData = TData>(
       url: string,
-      options: UseFetchOptions = {}
+      options: UseFetchOptions = {},
     ): Promise<TResponse | undefined> => {
       if (controllerRef.current) {
         controllerRef.current.abort();
@@ -42,13 +42,13 @@ export function useFetch<TData = unknown>(): UseFetchResult<TData> {
           ...options,
           signal: controller.signal,
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             ...options.headers,
           },
         });
 
         if (!response.ok) {
-          const errorText = await response.text().catch(() => "Unknown error");
+          const errorText = await response.text().catch(() => 'Unknown error');
           throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
 
@@ -57,20 +57,20 @@ export function useFetch<TData = unknown>(): UseFetchResult<TData> {
         return result;
       } catch (err) {
         if (err instanceof Error) {
-          if (err.name !== "AbortError") {
-            const errorMessage = err.message || "Something went wrong";
+          if (err.name !== 'AbortError') {
+            const errorMessage = err.message || 'Something went wrong';
             setError(errorMessage);
-            console.error("Fetch error:", err);
+            console.error('Fetch error:', err);
           }
         } else {
-          setError("An unknown error occurred");
-          console.error("Fetch error:", err);
+          setError('An unknown error occurred');
+          console.error('Fetch error:', err);
         }
       } finally {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   const abort = useCallback(() => {

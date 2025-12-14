@@ -1,7 +1,7 @@
 export const mapRequestBody = (
   name: string,
   version: string,
-  packages: string
+  packages: string,
 ) =>
   JSON.stringify({
     os: {
@@ -10,6 +10,6 @@ export const mapRequestBody = (
     },
     packages: packages
       .trim()
-      .split("\n")
+      .split('\n')
       .map((el) => el.split(/\s+/)),
   });
