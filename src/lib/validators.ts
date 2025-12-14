@@ -2,9 +2,8 @@ import { MAX_FIELD_LENGTH } from './constants';
 
 export const nameValidator = (value: string) => {
   const trimmedValue = value.trim();
-  if (!trimmedValue) return 'Заполните название ОС';
-  if (trimmedValue.length > MAX_FIELD_LENGTH)
-    return 'Слишком длинное название ОС';
+  if (!trimmedValue) return 'Fill in the OS name';
+  if (trimmedValue.length > MAX_FIELD_LENGTH) return 'Too long OS name';
   return '';
 };
 
@@ -13,11 +12,11 @@ export const versionValidator = (value: string) => {
   const trimmedValue = value.trim();
 
   if (!trimmedValue) {
-    return 'Заполните версию ОС';
+    return 'Fill in the OS version';
   } else if (trimmedValue.length > MAX_FIELD_LENGTH) {
-    return 'Слишком длинная версия';
+    return 'Too long version';
   } else if (!versionPattern.test(trimmedValue)) {
-    return 'Неверный формат версии';
+    return 'Invalid version format';
   } else {
     return '';
   }
@@ -26,9 +25,9 @@ export const versionValidator = (value: string) => {
 export const packagesValidator = (value: string) => {
   const trimmedValue = value.trim();
   if (!trimmedValue) {
-    return 'Заполните список пакетов';
+    return 'Fill in the package list';
   } else if (!/^(?:[^\s]+\s+[^\s]+\s+[^\s]+(?:\n|$))+$/.test(trimmedValue)) {
-    return 'Каждая строка должна содержать: Имя_пакета Версию Архитектуру';
+    return 'Each line should contain: Package_Name Version Architecture';
   } else {
     return '';
   }

@@ -8,11 +8,11 @@ export interface StatusBadgeProps {
 
 export const StatusBadge: FC<StatusBadgeProps> = ({ isVulnerable }) => (
   <div className={styles.auditStateBarRecord}>
-    <strong>Статус:</strong>
+    <strong>Status:</strong>
     <span
       className={`${styles.statusBadge} ${isVulnerable ? styles.isVulnerable : styles.isSecure}`}
     >
-      {isVulnerable ? 'Уязвимый' : 'Безопасный'}
+      {isVulnerable ? 'Vulnerable' : 'Secure'}
     </span>
   </div>
 );

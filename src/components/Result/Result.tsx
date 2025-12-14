@@ -18,14 +18,7 @@ export interface ResultProps {
 export const Result: FC<ResultProps> = ({ data, loading, error }) => {
   if (loading) {
     return (
-      <div
-        className={styles.result}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <div className={styles.result}>
         <Loader
           size='medium'
           type={'pulsing'}
@@ -36,17 +29,10 @@ export const Result: FC<ResultProps> = ({ data, loading, error }) => {
 
   if (error) {
     return (
-      <div
-        className={styles.result}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <div className={styles.result}>
         <Card>
           <CardBody>
-            <div>Ошибка: {error}</div>
+            <div>Error: {error}</div>
           </CardBody>
         </Card>
       </div>
@@ -55,17 +41,8 @@ export const Result: FC<ResultProps> = ({ data, loading, error }) => {
 
   if (!data) {
     return (
-      <div
-        className={styles.result}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          Заполните форму и нажмите "Audit"
-        </div>
+      <div className={styles.result}>
+        <div style={{ textAlign: 'center' }}>No data to display</div>
       </div>
     );
   }
@@ -74,25 +51,25 @@ export const Result: FC<ResultProps> = ({ data, loading, error }) => {
     <div className={styles.result}>
       <PanelBar>
         <PanelBarItem
-          title='Статус аудита'
+          title='Audit status'
           expanded={true}
         >
           <div className={styles.auditBar}>
             <StatusBadge isVulnerable={data.isVulnerable} />
             <div className={styles.auditStateBarRecord}>
-              <strong>Найдено уязвимых пакетов:</strong>
+              <strong>Vulnerable packages found:</strong>
               {data.vulnerableObjects.length}
             </div>
           </div>
         </PanelBarItem>
 
         <PanelBarItem
-          title='Уязвимые пакеты'
+          title='Vulnerable packages'
           expanded={true}
         >
           <div className={styles.auditBar}>
             {data.vulnerableObjects.length === 0 ? (
-              <div>Уязвимых пакетов не обнаружено</div>
+              <div>No vulnerable packages detected</div>
             ) : (
               <div style={{ maxHeight: '300px', overflow: 'auto' }}>
                 <Grid
@@ -101,22 +78,22 @@ export const Result: FC<ResultProps> = ({ data, loading, error }) => {
                 >
                   <GridColumn
                     field='name'
-                    title='Имя пакета'
+                    title='Package name'
                     width='200px'
                   />
                   <GridColumn
                     field='version'
-                    title='Версия'
+                    title='Version'
                     width='120px'
                   />
                   <GridColumn
                     field='arch'
-                    title='Архитектура'
+                    title='Architecture'
                     width='120px'
                   />
                   <GridColumn
                     field='vulns.length'
-                    title='Уязвимости'
+                    title='Vulnerabilities'
                     width='100px'
                   />
                 </Grid>
@@ -126,7 +103,7 @@ export const Result: FC<ResultProps> = ({ data, loading, error }) => {
         </PanelBarItem>
 
         <PanelBarItem
-          title='Подробности (JSON)'
+          title='Details (JSON)'
           expanded={false}
         >
           <div style={{ padding: '1rem' }}>
